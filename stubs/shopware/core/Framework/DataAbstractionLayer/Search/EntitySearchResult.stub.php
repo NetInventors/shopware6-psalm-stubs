@@ -25,4 +25,9 @@ class EntitySearchResult extends EntityCollection
      * @param iterable<Entity> $elements
      */
     protected function createNew(iterable $elements = []): static;
+
+    /**
+     * @param \Closure(mixed): bool $closure
+     */
+    public function filter(\Closure $closure): static;
 }

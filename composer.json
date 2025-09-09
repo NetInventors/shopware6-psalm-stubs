@@ -9,12 +9,19 @@
       "role": "Manufacturer"
     }
   ],
-  "require": {
-    "php": ">=8.2"
-  },
   "config": {
     "allow-plugins": {
       "symfony/runtime": false
+    }
+  },
+  "require": {
+    "php": ">=8.2",
+    "ext-simplexml": "*",
+    "vimeo/psalm": "^6.12"
+  },
+  "autoload": {
+    "psr-4": {
+      "NetInventors\\Shopware6PsalmStubs\\": "src/"
     }
   }
 }

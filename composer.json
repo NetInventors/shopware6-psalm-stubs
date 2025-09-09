@@ -17,6 +17,7 @@
   "require": {
     "php": ">=8.2",
     "ext-simplexml": "*",
+    "symfony/finder": "^7.3",
     "vimeo/psalm": "^6.12"
   },
   "autoload": {

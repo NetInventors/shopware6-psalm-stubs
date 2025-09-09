@@ -1,0 +1,20 @@
+{
+  "name": "netinventors/shopware6-psalm-stubs",
+  "description": "Psalm stub files for Shopware 6",
+  "license": "MPL-2.0",
+  "authors": [
+    {
+      "name": "Net Inventors GmbH",
+      "email": "info@netinventors.de",
+      "role": "Manufacturer"
+    }
+  ],
+  "require": {
+    "php": ">=8.2"
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/runtime": false
+    }
+  }
+}

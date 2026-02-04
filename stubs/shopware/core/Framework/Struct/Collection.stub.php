@@ -9,9 +9,11 @@ use Shopware\Core\Framework\Log\Package;
 abstract class Collection extends Struct implements \IteratorAggregate, \Countable
 {
     /**
-     * @param \Closure(TElement): bool $closure
-     *                                         
-     * @return static<TElement>
+     * @template T of TElement
+     *
+     * @param \Closure(T): bool $closure
+     *
+     * @return static<T>
      */
     public function filter(\Closure $closure): static;
 }

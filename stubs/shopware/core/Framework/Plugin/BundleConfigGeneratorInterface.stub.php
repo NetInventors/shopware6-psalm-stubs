@@ -1,0 +1,30 @@
+<?php declare(strict_types=1);
+
+namespace Shopware\Core\Framework\Plugin;
+
+use Shopware\Core\Framework\Log\Package;
+
+/**
+ * @psalm-type BundleConfig array{
+ *     basePath: string,
+ *     views: string[],
+ *     technicalName: string,
+ *     isTheme?: bool,
+ *     administration?: array{
+ *         path: string,
+ *         entryFilePath: string|null,
+ *         webpack: string|null,
+ *     },
+ *     storefront: array{
+ *        path: string ,
+ *        entryFilePath: string|null,
+ *        webpack: string|null,
+ *        styleFiles: string[],
+ *        hasComponentAssets: bool|null,
+ *     }
+ * }
+ */
+#[Package('framework')]
+interface BundleConfigGeneratorInterface
+{
+}

@@ -2,13 +2,24 @@
 
 namespace Shopware\Core\Framework\Struct;
 
-use Shopware\Core\Framework\FrameworkException;
 use Shopware\Core\Framework\Log\Package;
 
+/**
+ * Same templates as the class of Shopware: a stub replaces the class docblock, without them Psalm would lose the types
+ * of every collection.
+ *
+ * @template TElement
+ * @template TKey of array-key = array-key
+ *
+ * @implements \IteratorAggregate<TKey, TElement>
+ */
 #[Package('framework')]
 abstract class Collection extends Struct implements \IteratorAggregate, \Countable
 {
     /**
+     * Narrows the element type to the parameter type of the closure, e.g. after an instanceof check in the closure
+     * (Shopware: Closure(TElement): bool, returning static).
+     *
      * @template T of TElement
      *
      * @param \Closure(T): bool $closure

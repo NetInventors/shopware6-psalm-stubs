@@ -52,6 +52,9 @@ The plugin reads the installed version of `shopware/core` of the analysed projec
 whose constraint does not match. Without the tag a stub applies to the whole line of the package; with an unknown version
 (no `shopware/core` installed) every stub applies.
 
+Constraints apply to whole files, not to single methods: see [decisions](docs/en/decisions.md)
+([deutsch](docs/de/decisions.md)).
+
 ## Drift detection
 
 [signatures.json](signatures.json) records the original docblock and signature of every stubbed member (class, methods,

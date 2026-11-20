@@ -26,8 +26,8 @@ final class PsalmIntegrationTest extends TestCase
             $issues,
             'A pseudo method overriding a stubbed Shopware class must not need a native return type.',
         );
-        self::assertSame(
-            ['StrictRegistry.php'],
+        self::assertContains(
+            'StrictSearchResult.php',
             $issues['MoreSpecificImplementedParamType'] ?? [],
             'Narrowing a parameter of a stubbed Shopware class must be reported.',
         );

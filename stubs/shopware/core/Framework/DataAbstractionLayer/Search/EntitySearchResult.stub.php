@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+// Compatibility stub for Psalm, needed for every 6.7 release: Shopware types the class with
+// "@phpstan-type TElement template-type<TEntityCollection, EntityCollection, 'TElement'>", which Psalm does not
+// understand (it reads template-type<...> as a class name: hundreds of UndefinedClass/UndefinedDocblockClass in the
+// plugins without this stub).
+
 namespace Shopware\Core\Framework\DataAbstractionLayer\Search;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;

@@ -1,36 +1,6 @@
 {
     "shopware/core": "v6.7.16.1",
     "stubs": {
-        "shopware/core/Content/Cms/DataResolver/Element/ElementDataCollection.stub.php": {
-            "Shopware\\Core\\Content\\Cms\\DataResolver\\Element\\ElementDataCollection": {
-                "class": "/**\n* @implements \\IteratorAggregate<array-key, EntitySearchResult<covariant EntityCollection<covariant Entity>>>\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('discovery')]\nclass ElementDataCollection implements \\IteratorAggregate, \\Countable",
-                "method add": "/**\n* @param EntitySearchResult<covariant EntityCollection<covariant Entity>> $entitySearchResult\n*/\npublic function add(string $key, \\Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult $entitySearchResult): void;",
-                "method get": "/**\n* @return EntitySearchResult<covariant EntityCollection<covariant Entity>>|null\n*/\npublic function get(string $key): ?\\Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult;",
-                "method getIterator": "/**\n* @return \\Traversable<string, EntitySearchResult<covariant EntityCollection<covariant Entity>>>\n*/\npublic function getIterator(): \\Traversable;",
-                "property searchResults": "/**\n* @var array<string, EntitySearchResult<covariant EntityCollection<covariant Entity>>>\n*/\nprotected array $searchResults = [];"
-            }
-        },
-        "shopware/core/Framework/DataAbstractionLayer/Dbal/Common/RepositoryIterator.stub.php": {
-            "Shopware\\Core\\Framework\\DataAbstractionLayer\\Dbal\\Common\\RepositoryIterator": {
-                "class": "/**\n* @template TEntityCollection of EntityCollection\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\nclass RepositoryIterator",
-                "method __construct": "/**\n* @param EntityRepository<covariant TEntityCollection> $repository\n*/\npublic function __construct(\\Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository $repository, \\Shopware\\Core\\Framework\\Context $context, ?\\Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\Criteria $criteria = null);"
-            }
-        },
-        "shopware/core/Framework/DataAbstractionLayer/DefinitionInstanceRegistry.stub.php": {
-            "Shopware\\Core\\Framework\\DataAbstractionLayer\\DefinitionInstanceRegistry": {
-                "class": "#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\nclass DefinitionInstanceRegistry",
-                "method getRepository": "/**\n* @throws EntityRepositoryNotFoundException\n*\n* @return EntityRepository<covariant EntityCollection<covariant Entity>>\n*/\npublic function getRepository(string $entityName): \\Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository;"
-            }
-        },
-        "shopware/core/Framework/DataAbstractionLayer/Search/Criteria.stub.php": {
-            "Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\Criteria": {
-                "class": "/**\n* @template IDStructure of string|array<string, string> = string\n*\n* @final\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\nclass Criteria extends \\Shopware\\Core\\Framework\\Struct\\Struct implements \\Stringable",
-                "method __construct": "/**\n* @param array<IDStructure>|null $ids\n*/\npublic function __construct(?array $ids = null, protected int $nestingLevel = 0);",
-                "method getIds": "/**\n* @return array<IDStructure>\n*/\npublic function getIds(): array;",
-                "method setIds": "/**\n* @param array<IDStructure> $ids\n*/\npublic function setIds(array $ids): self;",
-                "property ids": "/**\n* @var array<IDStructure>\n*/\nprotected array $ids = [];"
-            }
-        },
         "shopware/core/Framework/DataAbstractionLayer/Search/EntitySearchResult.stub.php": {
             "Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult": {
                 "class": "/**\n* @final\n*\n* @template TEntityCollection of EntityCollection\n*\n* @phpstan-type TElement template-type<TEntityCollection, EntityCollection, 'TElement'>\n*\n* @extends EntityCollection<TElement>\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\n#[\\Shopware\\Core\\Framework\\Deprecation\\BCChange\\ClassHierarchyChange(version: 'v6.8.0', description: 'Will no longer extend EntityCollection, but will keep extending Struct.', newParentClass: \\Shopware\\Core\\Framework\\Struct\\Struct::class)]\nclass EntitySearchResult extends \\Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection implements \\JsonSerializable",

@@ -19,6 +19,17 @@ it for every plugin.
 `Stubs` registers every file `stubs/**/*.stub.php` that applies to the installed `shopware/core` and keeps the stubbed
 classes user defined (see below).
 
+## Stubs
+
+| Stub                             | Shopware | Why                                                                                     |
+| -------------------------------- | -------- | --------------------------------------------------------------------------------------- |
+| `EntitySearchResult`             | 6.7      | compatibility: Psalm does not understand `@phpstan-type … template-type<…>` of Shopware |
+| `BundleConfigGeneratorInterface` | 6.7      | `@psalm-type BundleConfig` for Psalm                                                    |
+| `DefinitionInstanceRegistry`     | `<6.7.2` | `getRepository()` returns a typed repository; Shopware annotates it itself since 6.7.2  |
+
+Removed because Shopware 6.7 annotates them itself (identical to the stub up to the version in brackets, better
+afterwards): `ElementDataCollection` (6.7.1), `RepositoryIterator` (6.7.1), `Criteria` (6.7.4).
+
 ## Versioned stubs
 
 A stub replaces the docblock and signature of the Shopware member for Psalm, it does not add to it. When Shopware improves

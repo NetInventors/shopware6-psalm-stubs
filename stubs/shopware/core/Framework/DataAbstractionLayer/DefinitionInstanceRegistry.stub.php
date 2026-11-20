@@ -1,5 +1,8 @@
 <?php declare(strict_types=1);
 
+// @shopware-version <6.7.2
+// Shopware annotates getRepository() itself since 6.7.2 (EntityRepository<covariant EntityCollection<covariant Entity>>).
+
 namespace Shopware\Core\Framework\DataAbstractionLayer;
 
 use Shopware\Core\Framework\Log\Package;

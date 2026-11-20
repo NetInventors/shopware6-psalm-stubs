@@ -9,6 +9,11 @@
 >
     <projectFiles>
         <directory name="src" />
+
+        <!-- Like the base config of the QA image -->
+        <ignoreFiles allowMissingFiles="true">
+            <directory name="../../vendor" />
+        </ignoreFiles>
     </projectFiles>
 
     <plugins>

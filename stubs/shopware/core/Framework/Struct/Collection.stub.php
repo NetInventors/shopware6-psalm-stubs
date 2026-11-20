@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+// @shopware-version >=6.7.7
+
 namespace Shopware\Core\Framework\Struct;
 
 use Shopware\Core\Framework\Log\Package;

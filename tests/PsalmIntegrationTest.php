@@ -33,6 +33,13 @@ final class PsalmIntegrationTest extends TestCase
         );
     }
 
+    public function testCollectionFilterNarrowsToTheClosureParameter(): void
+    {
+        foreach (self::issues() as $type => $files) {
+            self::assertNotContains('CollectionFilter.php', $files, $type . ' in tests/fixtures/src/CollectionFilter.php');
+        }
+    }
+
     /**
      * @return array<string, list<string>>
      */

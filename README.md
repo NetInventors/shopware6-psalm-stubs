@@ -21,16 +21,18 @@ classes user defined (see below).
 
 ## Stubs
 
-| Stub                             | Shopware | Why                                                                                     |
-| -------------------------------- | -------- | --------------------------------------------------------------------------------------- |
-| `EntitySearchResult`             | 6.7      | compatibility: Psalm does not understand `@phpstan-type … template-type<…>` of Shopware |
-| `BundleConfigGeneratorInterface` | 6.7      | `@psalm-type BundleConfig` for Psalm                                                    |
-| `DefinitionInstanceRegistry`     | `<6.7.2` | `getRepository()` returns a typed repository; Shopware annotates it itself since 6.7.2  |
-| `ElementDataCollection`          | `<6.7.2` | same as Shopware up to 6.7.1; Shopware adds `covariant` since 6.7.2                     |
-| `RepositoryIterator`             | `<6.7.2` | same as Shopware up to 6.7.1; Shopware adds `covariant` since 6.7.2                     |
-| `Criteria`                       | `<6.7.5` | same as Shopware up to 6.7.4; Shopware adds `@template IDStructure` since 6.7.5         |
+| Stub                             | Shopware  | Why                                                                                                 |
+| -------------------------------- | --------- | --------------------------------------------------------------------------------------------------- |
+| `EntitySearchResult`             | 6.7       | compatibility: Psalm does not understand `@phpstan-type … template-type<…>` of Shopware             |
+| `BundleConfigGeneratorInterface` | 6.7       | `@psalm-type BundleConfig` for Psalm                                                                |
+| `Collection`                     | `>=6.7.7` | `filter()` narrows to the parameter type of the closure (`static<T>`), with the templates of 6.7.7+ |
+| `Collection` (`before-6.7.7`)    | `<6.7.7`  | the same, with the templates before 6.7.7 (no `TKey`)                                               |
+| `DefinitionInstanceRegistry`     | `<6.7.2`  | `getRepository()` returns a typed repository; Shopware annotates it itself since 6.7.2              |
+| `ElementDataCollection`          | `<6.7.2`  | same as Shopware up to 6.7.1; Shopware adds `covariant` since 6.7.2                                 |
+| `RepositoryIterator`             | `<6.7.2`  | same as Shopware up to 6.7.1; Shopware adds `covariant` since 6.7.2                                 |
+| `Criteria`                       | `<6.7.5`  | same as Shopware up to 6.7.4; Shopware adds `@template IDStructure` since 6.7.5                     |
 
-The upper bounds are the first Shopware release whose own annotation differs from the stub (checked for every release
+An upper bound is the first Shopware release whose own annotation differs from the stub (checked for every release
 from 6.7.0.0 to 6.7.16.1). Below it the stub keeps the types of older projects stable, from it on Shopware's annotation
 applies unchanged.
 

@@ -1,0 +1,31 @@
+<?php declare(strict_types=1);
+
+// @shopware-version <6.7.7
+
+namespace Shopware\Core\Framework\Struct;
+
+use Shopware\Core\Framework\Log\Package;
+
+/**
+ * Same templates as the class of Shopware before 6.7.7 (without the second template): a stub replaces the class
+ * docblock, without them Psalm would lose the types of every collection.
+ *
+ * @template TElement
+ *
+ * @implements \IteratorAggregate<array-key, TElement>
+ */
+#[Package('framework')]
+abstract class Collection extends Struct implements \IteratorAggregate, \Countable
+{
+    /**
+     * Narrows the element type to the parameter type of the closure, e.g. after an instanceof check in the closure
+     * (Shopware: Closure(TElement): bool, returning static).
+     *
+     * @template T of TElement
+     *
+     * @param \Closure(T): bool $closure
+     *
+     * @return static<T>
+     */
+    public function filter(\Closure $closure): static;
+}

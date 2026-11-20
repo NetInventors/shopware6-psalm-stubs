@@ -13,6 +13,12 @@
             "Shopware\\Core\\Framework\\Plugin\\BundleConfigGeneratorInterface": {
                 "class": "/**\n* @phpstan-type BundleConfig array{\n*         basePath: string,\n*         views: string[],\n*         technicalName: string,\n*         isTheme?: bool,\n*         administration?: array{\n*             path: string,\n*             entryFilePath: string|null,\n*             webpack: string|null,\n*         },\n*         storefront: array{\n*            path: string ,\n*            entryFilePath: string|null,\n*            webpack: string|null,\n*            styleFiles: string[],\n*            hasComponentAssets: bool|null,\n*         }\n*     }\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\ninterface BundleConfigGeneratorInterface"
             }
+        },
+        "shopware/core/Framework/Struct/Collection.stub.php": {
+            "Shopware\\Core\\Framework\\Struct\\Collection": {
+                "class": "/**\n* @template TElement\n* @template TKey of array-key = array-key\n*\n* @implements \\IteratorAggregate<TKey, TElement>\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\nabstract class Collection extends \\Shopware\\Core\\Framework\\Struct\\Struct implements \\IteratorAggregate, \\Countable",
+                "method filter": "/**\n* @param \\Closure(TElement): bool $closure\n*/\npublic function filter(\\Closure $closure): static;"
+            }
         }
     }
 }

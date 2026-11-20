@@ -26,9 +26,13 @@ classes user defined (see below).
 | `EntitySearchResult`             | 6.7      | compatibility: Psalm does not understand `@phpstan-type … template-type<…>` of Shopware |
 | `BundleConfigGeneratorInterface` | 6.7      | `@psalm-type BundleConfig` for Psalm                                                    |
 | `DefinitionInstanceRegistry`     | `<6.7.2` | `getRepository()` returns a typed repository; Shopware annotates it itself since 6.7.2  |
+| `ElementDataCollection`          | `<6.7.2` | same as Shopware up to 6.7.1; Shopware adds `covariant` since 6.7.2                     |
+| `RepositoryIterator`             | `<6.7.2` | same as Shopware up to 6.7.1; Shopware adds `covariant` since 6.7.2                     |
+| `Criteria`                       | `<6.7.5` | same as Shopware up to 6.7.4; Shopware adds `@template IDStructure` since 6.7.5         |
 
-Removed because Shopware 6.7 annotates them itself (identical to the stub up to the version in brackets, better
-afterwards): `ElementDataCollection` (6.7.1), `RepositoryIterator` (6.7.1), `Criteria` (6.7.4).
+The upper bounds are the first Shopware release whose own annotation differs from the stub (checked for every release
+from 6.7.0.0 to 6.7.16.1). Below it the stub keeps the types of older projects stable, from it on Shopware's annotation
+applies unchanged.
 
 ## Versioned stubs
 

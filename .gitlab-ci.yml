@@ -1,0 +1,29 @@
+# Tests and drift check of the stubs (composer test: PHPUnit including tests/SignaturesTest.php).
+#
+# composer.lock is not committed, so every pipeline installs the newest shopware/core of the line (require-dev
+# "~6.7.0" on the branch 7.0). A weekly pipeline schedule therefore reports when a Shopware release changes a member
+# this package stubs (bin/stub-signatures check).
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+test:
+  image: composer:2.11
+  tags: [ test ]
+  variables:
+    COMPOSER_CACHE_DIR: $CI_PROJECT_DIR/.composer-cache
+  cache:
+    key: composer
+    paths:
+      - .composer-cache
+  script:
+    # The PHP extensions of Shopware are not needed: the tests only parse and analyse its code
+    - composer install --no-interaction --no-progress --ignore-platform-req='ext-*'
+    - composer show shopware/core | grep -E '^versions'
+    - composer test

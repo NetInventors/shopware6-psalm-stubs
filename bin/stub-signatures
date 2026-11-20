@@ -1,0 +1,220 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Detects changes of Shopware to the members this package stubs.
+ *
+ *     php bin/stub-signatures check     compare with signatures.json, exit 1 on a difference
+ *     php bin/stub-signatures update    write signatures.json from the installed shopware/core
+ *
+ * A stub replaces the docblock and signature of a Shopware class or member for Psalm. If Shopware changes them later
+ * (a better annotation, another parameter), the stub would hide that. signatures.json records the original docblock and
+ * signature of every stubbed member as found in shopware/core (require-dev, the newest release of the package's line).
+ * When "check" reports a difference: look at the change of Shopware, then adapt the stub, limit it with
+ * "@shopware-version" (see src/StubFile.php) or remove it, and run "update".
+ *
+ * Stubs whose @shopware-version does not include the installed shopware/core are skipped.
+ */
+
+use Composer\Autoload\ClassLoader;
+use NetInventors\Shopware6PsalmStubs\StubFile;
+use PhpParser\Comment\Doc;
+use PhpParser\Node;
+use PhpParser\NodeFinder;
+use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter\Standard;
+
+/** @var ClassLoader $loader */
+$loader = require __DIR__ . '/../vendor/autoload.php';
+
+const SNAPSHOT = __DIR__ . '/../signatures.json';
+
+$command = $argv[1] ?? '';
+
+if (!in_array($command, ['check', 'update'], true)) {
+    fwrite(STDERR, "Usage: php bin/stub-signatures check|update\n");
+    exit(2);
+}
+
+$version = \Composer\InstalledVersions::getPrettyVersion('shopware/core') ?? throw new RuntimeException('shopware/core is not installed (composer install).');
+$current = [];
+$errors  = [];
+
+foreach (StubFile::all() as $stub) {
+    $relative = substr($stub->path, strlen((string) realpath(StubFile::DIRECTORY)) + 1);
+
+    if (!$stub->appliesTo(\Composer\InstalledVersions::getVersion('shopware/core'))) {
+        echo sprintf("skipped %s (@shopware-version %s)\n", $relative, $stub->constraint);
+        continue;
+    }
+
+    foreach (classLikes($stub->path) as $name => $stubNode) {
+        $file = $loader->findFile($name);
+
+        if ($file === false) {
+            $errors[] = sprintf('%s: %s does not exist in shopware/core %s.', $relative, $name, $version);
+            continue;
+        }
+
+        $original = classLikes($file)[$name] ?? null;
+
+        if ($original === null) {
+            $errors[] = sprintf('%s: %s not found in %s.', $relative, $name, $file);
+            continue;
+        }
+
+        foreach (members($stubNode) as $key => $_) {
+            $members = members($original);
+
+            if (!isset($members[$key])) {
+                $errors[] = sprintf('%s: %s %s does not exist in shopware/core %s.', $relative, $name, $key, $version);
+                continue;
+            }
+
+            $current[$relative][$name][$key] = $members[$key];
+        }
+    }
+}
+
+foreach ($errors as $error) {
+    fwrite(STDERR, $error . "\n");
+}
+
+if ($command === 'update') {
+    if ($errors !== []) {
+        exit(1);
+    }
+
+    file_put_contents(SNAPSHOT, json_encode(
+        ['shopware/core' => $version, 'stubs' => $current],
+        JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+    ) . "\n");
+    echo sprintf("signatures.json written for shopware/core %s.\n", $version);
+    exit(0);
+}
+
+$snapshot = is_file(SNAPSHOT) ? json_decode((string) file_get_contents(SNAPSHOT), true) : null;
+$recorded = is_array($snapshot) ? ($snapshot['stubs'] ?? []) : [];
+$changes  = 0;
+
+foreach ($current as $relative => $classes) {
+    foreach ($classes as $name => $members) {
+        foreach ($members as $key => $signature) {
+            $before = $recorded[$relative][$name][$key] ?? null;
+
+            if ($before === null) {
+                fwrite(STDERR, sprintf("%s: %s %s is not recorded, run \"update\".\n", $relative, $name, $key));
+                $changes++;
+            } elseif ($before !== $signature) {
+                fwrite(STDERR, sprintf(
+                    "%s: Shopware changed %s %s (recorded for shopware/core %s, now %s):\n%s\n",
+                    $relative,
+                    $name,
+                    $key,
+                    (string) ($snapshot['shopware/core'] ?? '?'),
+                    $version,
+                    diff($before, $signature),
+                ));
+                $changes++;
+            }
+        }
+    }
+}
+
+if ($errors !== [] || $changes > 0) {
+    fwrite(STDERR, "\nCheck the stubs against the changes of Shopware: adapt them, limit them with @shopware-version or remove them, then run \"update\".\n");
+    exit(1);
+}
+
+echo sprintf("The stubbed members are unchanged in shopware/core %s.\n", $version);
+
+/**
+ * @return array<string, Node\Stmt\ClassLike> fully qualified name => class, interface or trait
+ */
+function classLikes(string $file): array
+{
+    $statements = (new ParserFactory())->createForHostVersion()->parse((string) file_get_contents($file)) ?? [];
+    $traverser  = new PhpParser\NodeTraverser(new PhpParser\NodeVisitor\NameResolver());
+    $statements = $traverser->traverse($statements);
+    $result     = [];
+
+    foreach ((new NodeFinder())->findInstanceOf($statements, Node\Stmt\ClassLike::class) as $node) {
+        if ($node->namespacedName !== null) {
+            $result[$node->namespacedName->toString()] = $node;
+        }
+    }
+
+    return $result;
+}
+
+/**
+ * Docblock and signature of the class itself and of every method, property and constant, without bodies
+ *
+ * @return array<string, string> e.g. "class", "method filter", "property ids", "constant TYPE"
+ */
+function members(Node\Stmt\ClassLike $node): array
+{
+    $printer = new Standard();
+    $members = [];
+
+    $head        = clone $node;
+    $head->stmts = [];
+    $members['class'] = signature($node->getDocComment(), $printer->prettyPrint([withoutDoc($head)]));
+
+    foreach ($node->getMethods() as $method) {
+        $copy        = withoutDoc(clone $method);
+        $copy->stmts = null;
+        $members['method ' . $method->name->toString()] = signature($method->getDocComment(), $printer->prettyPrint([$copy]));
+    }
+
+    foreach ($node->getProperties() as $property) {
+        foreach ($property->props as $item) {
+            $copy        = withoutDoc(clone $property);
+            $copy->props = [$item];
+            $members['property ' . $item->name->toString()] = signature($property->getDocComment(), $printer->prettyPrint([$copy]));
+        }
+    }
+
+    foreach ($node->getConstants() as $constant) {
+        foreach ($constant->consts as $item) {
+            $copy         = withoutDoc(clone $constant);
+            $copy->consts = [$item];
+            $members['constant ' . $item->name->toString()] = signature($constant->getDocComment(), $printer->prettyPrint([$copy]));
+        }
+    }
+
+    return $members;
+}
+
+function withoutDoc(Node $node): Node
+{
+    $node->setAttribute('comments', []);
+
+    return $node;
+}
+
+function signature(?Doc $doc, string $code): string
+{
+    $lines = $doc === null ? [] : array_map('trim', explode("\n", $doc->getText()));
+
+    return trim(implode("\n", [...$lines, preg_replace('/\{\s*\}$/', '', trim($code)) ?? $code]));
+}
+
+function diff(string $before, string $after): string
+{
+    $old = explode("\n", $before);
+    $new = explode("\n", $after);
+    $out = [];
+
+    foreach (array_diff($old, $new) as $line) {
+        $out[] = '  - ' . $line;
+    }
+
+    foreach (array_diff($new, $old) as $line) {
+        $out[] = '  + ' . $line;
+    }
+
+    return implode("\n", $out);
+}

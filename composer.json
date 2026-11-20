@@ -11,18 +11,40 @@
   ],
   "config": {
     "allow-plugins": {
-      "symfony/runtime": false
-    }
+      "symfony/runtime": false,
+      "php-http/discovery": false
+    },
+    "audit": {
+      "block-insecure": false
+    },
+    "sort-packages": true
   },
   "require": {
     "php": ">=8.2",
     "ext-simplexml": "*",
     "symfony/finder": "^7.3",
-    "vimeo/psalm": "^6.12"
+    "vimeo/psalm": "^6.12",
+    "composer/semver": "^3.4",
+    "composer-runtime-api": "^2.2"
   },
   "autoload": {
     "psr-4": {
       "NetInventors\\Shopware6PsalmStubs\\": "src/"
     }
+  },
+  "require-dev": {
+    "nikic/php-parser": "^5.0",
+    "phpunit/phpunit": "^12.0",
+    "shopware/core": "~6.7.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NetInventors\\Shopware6PsalmStubs\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "signatures:check": "php bin/stub-signatures check",
+    "signatures:update": "php bin/stub-signatures update"
   }
 }

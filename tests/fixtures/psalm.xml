@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!-- Fixture for PsalmIntegrationTest: classes extending stubbed Shopware classes -->
+<psalm
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    errorLevel="1"
+    findUnusedCode="false"
+    findUnusedBaselineEntry="false"
+>
+    <projectFiles>
+        <directory name="src" />
+    </projectFiles>
+
+    <plugins>
+        <pluginClass class="NetInventors\Shopware6PsalmStubs\Stubs" />
+    </plugins>
+</psalm>

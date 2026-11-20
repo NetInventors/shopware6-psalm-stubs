@@ -5,25 +5,28 @@ declare(strict_types=1);
 namespace NetInventors\Shopware6PsalmStubs;
 
 use Composer\Semver\Semver;
+use Composer\Semver\VersionParser;
 use Symfony\Component\Finder\Finder;
 
 /**
  * A stub file of this package and the Shopware versions it applies to.
  *
- * Like a polyfill, a stub may be limited to the Shopware versions that need it with a Composer constraint in its file
- * header, e.g. when Shopware fixes the annotation itself in 6.7.20:
+ * Like a polyfill, every stub is limited to the Shopware versions that need it with a Composer constraint in its file
+ * header (before "namespace"), e.g. when Shopware fixes the annotation itself in 6.7.20:
  *
  *     <?php declare(strict_types=1);
  *
- *     // @shopware-version <6.7.20
+ *     // @shopware-version >=6.7 <6.7.20
  *
  *     namespace Shopware\Core\...;
  *
- * Without the tag the stub applies to every version of the package's line (7.x: Shopware 6.7).
+ * Stubs of the same class for different Shopware versions are variants: "Collection.phpstub",
+ * "Collection.legacy.phpstub". The part after the first dot only tells the files apart, the constraint decides.
  */
 final readonly class StubFile
 {
     public const DIRECTORY = __DIR__ . '/../stubs';
+    public const EXTENSION = '.phpstub';
 
     private function __construct(
         public string $path,
@@ -36,7 +39,7 @@ final readonly class StubFile
      */
     public static function all(): array
     {
-        $finder = (new Finder())->files()->in(self::DIRECTORY)->name('*.stub.php')->sortByName();
+        $finder = (new Finder())->files()->in(self::DIRECTORY)->name('*' . self::EXTENSION)->sortByName();
         $stubs  = [];
 
         foreach ($finder as $file) {
@@ -44,6 +47,31 @@ final readonly class StubFile
         }
 
         return $stubs;
+    }
+
+    /**
+     * The stubs to register for the installed Shopware version. An unknown version (no shopware/core installed, e.g.
+     * analysing a library) registers one variant per class: the one for the newest Shopware version.
+     *
+     * @return list<self>
+     */
+    public static function forVersion(?string $shopwareVersion): array
+    {
+        if ($shopwareVersion !== null) {
+            return array_values(array_filter(self::all(), static fn (self $stub): bool => $stub->appliesTo($shopwareVersion)));
+        }
+
+        $newest = [];
+
+        foreach (self::all() as $stub) {
+            $current = $newest[$stub->variantOf()] ?? null;
+
+            if ($current === null || version_compare($stub->upperBound(), $current->upperBound(), '>')) {
+                $newest[$stub->variantOf()] = $stub;
+            }
+        }
+
+        return array_values($newest);
     }
 
     public static function fromFile(string $path): self
@@ -59,23 +87,37 @@ final readonly class StubFile
 
         if ($constraint !== null) {
             // Rejects an invalid constraint when the stub is loaded, not only when a version is checked against it
-            (new \Composer\Semver\VersionParser())->parseConstraints($constraint);
+            (new VersionParser())->parseConstraints($constraint);
         }
 
         return new self($path, $constraint);
     }
 
-    /**
-     * Whether the stub is registered for the installed Shopware version. An unknown version (no shopware/core
-     * installed, e.g. analysing a library) registers every stub, as before the constraints existed.
-     */
-    public function appliesTo(?string $shopwareVersion): bool
+    public function appliesTo(string $shopwareVersion): bool
     {
-        if ($this->constraint === null || $shopwareVersion === null) {
-            return true;
+        return $this->constraint === null || Semver::satisfies($shopwareVersion, $this->constraint);
+    }
+
+    /**
+     * The file without the variant name: stubs with the same value stub the same class.
+     */
+    public function variantOf(): string
+    {
+        $name = basename($this->path, self::EXTENSION);
+
+        return \dirname($this->path) . '/' . explode('.', $name, 2)[0];
+    }
+
+    /**
+     * The normalized upper bound of the constraint ("9999999-dev" without one).
+     */
+    public function upperBound(): string
+    {
+        if ($this->constraint === null) {
+            return '9999999-dev';
         }
 
-        return Semver::satisfies($shopwareVersion, $this->constraint);
+        return (new VersionParser())->parseConstraints($this->constraint)->getUpperBound()->getVersion();
     }
 
     public static function isStub(string $path): bool

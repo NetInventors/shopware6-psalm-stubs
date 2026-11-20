@@ -1,8 +1,9 @@
 # Tests and drift check of the stubs (composer test: PHPUnit including tests/SignaturesTest.php).
 #
-# composer.lock is not committed, so every pipeline installs the newest shopware/core of the line (require-dev
-# "~6.7.0" on the branch 7.0). A weekly pipeline schedule therefore reports when a Shopware release changes a member
-# this package stubs (bin/stub-signatures check).
+# composer.lock is not committed, so every pipeline installs the newest shopware/core of the supported minor
+# (require-dev "~6.7.0"). A weekly pipeline schedule therefore reports when a Shopware release changes a member this
+# package stubs (bin/stub-signatures check). Once a second Shopware minor gets stubs, this job needs one variant per
+# minor (and signatures.json one snapshot per minor).
 
 workflow:
   rules:

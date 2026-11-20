@@ -16,12 +16,8 @@ class Stubs implements PluginEntryPointInterface
     #[\Override]
     public function __invoke(RegistrationInterface $registration, \SimpleXMLElement|null $config = null): void
     {
-        $version = ShopwareVersion::installed();
-
-        foreach (StubFile::all() as $stub) {
-            if ($stub->appliesTo($version)) {
-                $registration->addStubFile($stub->path);
-            }
+        foreach (StubFile::forVersion(ShopwareVersion::installed()) as $stub) {
+            $registration->addStubFile($stub->path);
         }
 
         // Psalm checks the handler with class_exists(..., false): load it first

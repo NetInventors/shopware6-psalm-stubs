@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-// @shopware-version <6.7.5
+// @shopware-version >=6.7 <6.7.5
 // Shopware annotates Criteria itself since 6.7.5 (@template IDStructure of string|array<string, string> = string).
 
 namespace Shopware\Core\Framework\DataAbstractionLayer\Search;

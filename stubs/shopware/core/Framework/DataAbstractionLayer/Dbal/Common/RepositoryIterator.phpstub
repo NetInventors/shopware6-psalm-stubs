@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-// @shopware-version <6.7.2
+// @shopware-version >=6.7 <6.7.2
 // Shopware annotates the constructor itself since 6.7.2 (EntityRepository<covariant TEntityCollection>).
 
 namespace Shopware\Core\Framework\DataAbstractionLayer\Dbal\Common;

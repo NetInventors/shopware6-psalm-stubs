@@ -45,7 +45,7 @@ $errors  = [];
 foreach (StubFile::all() as $stub) {
     $relative = substr($stub->path, strlen((string) realpath(StubFile::DIRECTORY)) + 1);
 
-    if (!$stub->appliesTo(\Composer\InstalledVersions::getVersion('shopware/core'))) {
+    if (!$stub->appliesTo((string) \Composer\InstalledVersions::getVersion('shopware/core'))) {
         echo sprintf("skipped %s (@shopware-version %s)\n", $relative, $stub->constraint);
         continue;
     }

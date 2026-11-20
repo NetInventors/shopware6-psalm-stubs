@@ -1,7 +1,7 @@
 {
     "shopware/core": "v6.7.16.1",
     "stubs": {
-        "shopware/core/Framework/DataAbstractionLayer/Search/EntitySearchResult.stub.php": {
+        "shopware/core/Framework/DataAbstractionLayer/Search/EntitySearchResult.phpstub": {
             "Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult": {
                 "class": "/**\n* @final\n*\n* @template TEntityCollection of EntityCollection\n*\n* @phpstan-type TElement template-type<TEntityCollection, EntityCollection, 'TElement'>\n*\n* @extends EntityCollection<TElement>\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\n#[\\Shopware\\Core\\Framework\\Deprecation\\BCChange\\ClassHierarchyChange(version: 'v6.8.0', description: 'Will no longer extend EntityCollection, but will keep extending Struct.', newParentClass: \\Shopware\\Core\\Framework\\Struct\\Struct::class)]\nclass EntitySearchResult extends \\Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection implements \\JsonSerializable",
                 "method getAt": "/**\n* @deprecated tag:v6.8.0 - Will be removed. Use getEntities()->getAt() instead.\n*/\npublic function getAt(int $position);",
@@ -9,12 +9,12 @@
                 "method filter": "/**\n* @deprecated tag:v6.8.0 - Will be removed. Use getEntities()->filter() instead.\n*/\npublic function filter(\\Closure $closure): static;"
             }
         },
-        "shopware/core/Framework/Plugin/BundleConfigGeneratorInterface.stub.php": {
+        "shopware/core/Framework/Plugin/BundleConfigGeneratorInterface.phpstub": {
             "Shopware\\Core\\Framework\\Plugin\\BundleConfigGeneratorInterface": {
                 "class": "/**\n* @phpstan-type BundleConfig array{\n*         basePath: string,\n*         views: string[],\n*         technicalName: string,\n*         isTheme?: bool,\n*         administration?: array{\n*             path: string,\n*             entryFilePath: string|null,\n*             webpack: string|null,\n*         },\n*         storefront: array{\n*            path: string ,\n*            entryFilePath: string|null,\n*            webpack: string|null,\n*            styleFiles: string[],\n*            hasComponentAssets: bool|null,\n*         }\n*     }\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\ninterface BundleConfigGeneratorInterface"
             }
         },
-        "shopware/core/Framework/Struct/Collection.stub.php": {
+        "shopware/core/Framework/Struct/Collection.phpstub": {
             "Shopware\\Core\\Framework\\Struct\\Collection": {
                 "class": "/**\n* @template TElement\n* @template TKey of array-key = array-key\n*\n* @implements \\IteratorAggregate<TKey, TElement>\n*/\n#[\\Shopware\\Core\\Framework\\Log\\Package('framework')]\nabstract class Collection extends \\Shopware\\Core\\Framework\\Struct\\Struct implements \\IteratorAggregate, \\Countable",
                 "method filter": "/**\n* @param \\Closure(TElement): bool $closure\n*/\npublic function filter(\\Closure $closure): static;"

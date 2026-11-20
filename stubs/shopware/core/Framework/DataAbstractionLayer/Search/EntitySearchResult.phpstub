@@ -1,7 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
+// @shopware-version ~6.7.0
 // Compatibility stub for Psalm, needed for every 6.7 release: Shopware types the class with
 // "@phpstan-type TElement template-type<TEntityCollection, EntityCollection, 'TElement'>", which Psalm does not
 // understand (it reads template-type<...> as a class name: hundreds of UndefinedClass/UndefinedDocblockClass in the
